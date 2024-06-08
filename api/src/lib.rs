@@ -1,15 +1,32 @@
-use std::env;
-use entity::{sea_orm::{Database}};
+use tonic::{Request, Response, Status};
+use tonic::transport::Server;
+
+pub mod account_api {
+    tonic::include_proto!("account");
+}
+
+use account_api::account_service_server::{AccountService, AccountServiceServer};
+use account_api::{SignInRequest, SignInResponse};
+
+#[derive(Debug, Default)]
+struct AccountServiceImpl;
+
+#[tonic::async_trait]
+impl AccountService for AccountServiceImpl {
+    async fn sign_in(&self, _: Request<SignInRequest>) -> Result<Response<SignInResponse>, Status> {
+        let response = SignInResponse { id: 1 };
+
+        Ok(Response::new(response))
+    }
+}
 
 #[tokio::main]
 async fn start() -> Result<(), Box<dyn std::error::Error>> {
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let addr = "[::1]:10000".parse().unwrap();
 
-    let connection = Database::connect(&database_url).await?;
+    let account = AccountServiceServer::new(AccountServiceImpl);
 
-    connection.ping().await?;
-   
-    connection.close().await?;
+    Server::builder().add_service(account).serve(addr).await?;
 
     Ok(())
 }
