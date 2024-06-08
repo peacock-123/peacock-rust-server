@@ -1,12 +1,11 @@
-use tonic::{Request, Response, Status};
+use account_api::account_service_server::{AccountService, AccountServiceServer};
+use account_api::{SignInRequest, SignInResponse};
 use tonic::transport::Server;
+use tonic::{Request, Response, Status};
 
 pub mod account_api {
     tonic::include_proto!("account");
 }
-
-use account_api::account_service_server::{AccountService, AccountServiceServer};
-use account_api::{SignInRequest, SignInResponse};
 
 #[derive(Debug, Default)]
 struct AccountServiceImpl;

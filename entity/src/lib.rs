@@ -1,3 +1,3 @@
 mod entities;
-pub use sea_orm;
 pub use entities::*;
+pub use sea_orm;

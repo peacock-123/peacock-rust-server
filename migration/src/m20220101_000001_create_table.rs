@@ -18,7 +18,12 @@ impl MigrationTrait for Migration {
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Account::Email).string().char_len(500).not_null())
+                    .col(
+                        ColumnDef::new(Account::Email)
+                            .string()
+                            .char_len(500)
+                            .not_null(),
+                    )
                     .to_owned(),
             )
             .await
