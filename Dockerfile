@@ -1,19 +1,10 @@
-FROM rust:latest AS builder
+FROM rust:1-alpine3.20 as builder
+RUN apk add --no-cache musl-dev protobuf-dev
+WORKDIR /app
+COPY ./ /app
+RUN cargo build --release
 
-RUN apt-get update && apt-get install -y protobuf-compiler && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /usr/src/peacock
-
-COPY . .
-
-RUN cargo install --path .
-
-FROM debian:bullseye-slim
-
-WORKDIR /usr/local/bin
-
-COPY --from=builder /usr/src/peacock/target/release/peacock-server .
-
-EXPOSE 10000
-
+FROM alpine:3.20
+COPY --from=builder /app/target/release/peacock-server .
+EXPOSE 50051
 CMD ["./peacock-server"]

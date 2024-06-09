@@ -21,7 +21,7 @@ impl AccountService for AccountServiceImpl {
 
 #[tokio::main]
 async fn start() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "[::1]:10000".parse().unwrap();
+    let addr = "0.0.0.0:50051".parse()?;
 
     let account = AccountServiceServer::new(AccountServiceImpl);
 
