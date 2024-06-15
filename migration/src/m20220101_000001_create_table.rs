@@ -11,13 +11,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Account::Table)
                     .if_not_exists()
-                    .col(
-                        ColumnDef::new(Account::Id)
-                            .big_integer()
-                            .not_null()
-                            .auto_increment()
-                            .primary_key(),
-                    )
+                    .col(ColumnDef::new(Account::Id).uuid().not_null().primary_key())
                     .col(
                         ColumnDef::new(Account::Email)
                             .string()

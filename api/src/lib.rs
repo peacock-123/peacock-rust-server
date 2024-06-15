@@ -1,3 +1,6 @@
+mod application;
+mod domain;
+
 use account_api::account_service_server::{AccountService, AccountServiceServer};
 use account_api::{SignInRequest, SignInResponse};
 use tonic::transport::Server;
