@@ -1,32 +1,27 @@
+use std::sync::Arc;
+
+use dotenv::dotenv;
+use tonic::transport::Server;
+
+use crate::application::account::account_use_case::AccountUseCaseImpl;
+use crate::infrastructure::repository::account_orm_repository::AccountOrmRepository;
+use crate::infrastructure::repository::connection::Connection;
+use crate::presentation::account::account_resolver::account_api::account_service_server::AccountServiceServer;
+use crate::presentation::account::account_resolver::AccountResolver;
+
 mod application;
 mod domain;
-
-use account_api::account_service_server::{AccountService, AccountServiceServer};
-use account_api::{SignInRequest, SignInResponse};
-use tonic::transport::Server;
-use tonic::{Request, Response, Status};
-
-pub mod account_api {
-    tonic::include_proto!("account");
-}
-
-#[derive(Debug, Default)]
-struct AccountServiceImpl;
-
-#[tonic::async_trait]
-impl AccountService for AccountServiceImpl {
-    async fn sign_in(&self, _: Request<SignInRequest>) -> Result<Response<SignInResponse>, Status> {
-        let response = SignInResponse { id: 1 };
-
-        Ok(Response::new(response))
-    }
-}
+mod infrastructure;
+mod presentation;
 
 #[tokio::main]
 async fn start() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "0.0.0.0:50051".parse()?;
 
-    let account = AccountServiceServer::new(AccountServiceImpl);
+    let connection = Connection::new(std::env::var("DATABASE_URL").unwrap()).await;
+    let account_repository = Arc::new(AccountOrmRepository::new(connection));
+    let account_use_case = Arc::new(AccountUseCaseImpl::new(account_repository.clone()));
+    let account = AccountServiceServer::new(AccountResolver::new(account_use_case));
 
     Server::builder().add_service(account).serve(addr).await?;
 
@@ -34,6 +29,8 @@ async fn start() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 pub fn main() {
+    dotenv().ok();
+
     let result = start();
 
     if let Some(err) = result.err() {
