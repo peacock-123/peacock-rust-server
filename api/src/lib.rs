@@ -3,7 +3,7 @@ use std::sync::Arc;
 use dotenv::dotenv;
 use tonic::transport::Server;
 
-use crate::application::account::account_use_case::AccountUseCaseImpl;
+use crate::application::account::account_use_case::AccountUseCase;
 use crate::infrastructure::repository::account_orm_repository::AccountOrmRepository;
 use crate::infrastructure::repository::connection::Connection;
 use crate::presentation::account::account_resolver::account_api::account_service_server::AccountServiceServer;
@@ -20,7 +20,7 @@ async fn start() -> Result<(), Box<dyn std::error::Error>> {
 
     let connection = Connection::new(std::env::var("DATABASE_URL").unwrap()).await;
     let account_repository = Arc::new(AccountOrmRepository::new(connection));
-    let account_use_case = Arc::new(AccountUseCaseImpl::new(account_repository.clone()));
+    let account_use_case = Arc::new(AccountUseCase::new(account_repository.clone()));
     let account = AccountServiceServer::new(AccountResolver::new(account_use_case));
 
     Server::builder().add_service(account).serve(addr).await?;

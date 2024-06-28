@@ -13,11 +13,11 @@ pub mod account_api {
 }
 
 pub struct AccountResolver {
-    account_use_case: Arc<dyn AccountUseCase>,
+    account_use_case: Arc<AccountUseCase>,
 }
 
 impl AccountResolver {
-    pub fn new(account_use_case: Arc<dyn AccountUseCase>) -> AccountResolver {
+    pub fn new(account_use_case: Arc<AccountUseCase>) -> AccountResolver {
         AccountResolver { account_use_case }
     }
 }
