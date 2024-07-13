@@ -23,6 +23,7 @@ async fn start() -> Result<(), Box<dyn std::error::Error>> {
     let auth_env = AuthEnv {
         kakao_client_id: std::env::var("KAKAO_CLIENT_ID").unwrap(),
         kakao_redirect_dir: std::env::var("KAKAO_REDIRECT_DIR").unwrap(),
+        kakao_client_secret: std::env::var("KAKAO_CLIENT_SECRET").unwrap(),
     };
 
     let account_repository = Arc::new(AccountOrmRepository::new(connection));

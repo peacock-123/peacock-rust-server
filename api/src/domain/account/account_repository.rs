@@ -1,5 +1,6 @@
-use crate::domain::account::account::Account;
 use mockall::*;
+
+use crate::domain::account::account::Account;
 
 #[automock]
 pub trait AccountRepository: Send + Sync {

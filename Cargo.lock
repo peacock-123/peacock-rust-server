@@ -2150,6 +2150,7 @@ dependencies = [
  "prost",
  "readonly",
  "reqwest",
+ "serde",
  "thiserror",
  "tokio",
  "tonic",
